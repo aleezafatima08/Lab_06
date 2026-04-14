@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Color Switch Reaction Arena</title>
+
+<style>
+body {
+  font-family: Arial;
+  text-align: center;
+  background: #111;
+  color: white;
+}
+
+h2 {
+  margin-top: 10px;
+}
+
+#arena {
+  width: 700px;
+  height: 400px;
+  margin: 20px auto;
+  border: 2px solid white;
+  position: relative;
+  background: #000;
+  overflow: hidden;
+}
+
+.circle {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  position: absolute;
+  cursor: pointer;
+}
+
+button {
+  padding: 10px 15px;
+  margin: 10px;
+}
+
+#stats {
+  margin-top: 10px;
+}
+
+#targetColor {
+  font-size: 20px;
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<h2>🎯 Color Switch Reaction Arena</h2>
+
+<p>Click ONLY the target color</p>
+
+<div id="targetColor">Press Start</div>
+
+<button onclick="startGame()">Start Game</button>
+
+<div id="arena"></div>
+
+<div id="stats">
+  Score: <span id="score">0</span> |
+  Miss: <span id="miss">0</span> |
+  Time: <span id="time">0</span> ms
+</div>
+
+<script>
+let colors = ["red", "blue", "green", "yellow", "purple"];
+let target = "";
+let score = 0;
+let miss = 0;
+let startTime;
+
+function startGame() {
+  score = 0;
+  miss = 0;
+  updateStats();
+  nextRound();
+}
+
+function nextRound() {
+  const arena = document.getElementById("arena");
+  arena.innerHTML = "";
+
+  target = colors[Math.floor(Math.random() * colors.length)];
+  document.getElementById("targetColor").innerText =
+    "Target: " + target.toUpperCase();
+
+  let size = 45;
+
+  // create circles
+  for (let i = 0; i < 8; i++) {
+    let circle = document.createElement("div");
+    circle.className = "circle";
+
+    let color = colors[Math.floor(Math.random() * colors.length)];
+    circle.style.background = color;
+
+    circle.style.left = Math.random() * (700 - size) + "px";
+    circle.style.top = Math.random() * (400 - size) + "px";
+
+    circle.onclick = function () {
+      if (color === target) {
+        let reaction = Date.now() - startTime;
+        score++;
+        document.getElementById("time").innerText = reaction;
+        updateStats();
+        nextRound();
+      } else {
+        miss++;
+        updateStats();
+      }
+    };
+
+    arena.appendChild(circle);
+  }
+
+  startTime = Date.now();
+}
+
+function updateStats() {
+  document.getElementById("score").innerText = score;
+  document.getElementById("miss").innerText = miss;
+}
+</script>
+
+</body>
+</html>
